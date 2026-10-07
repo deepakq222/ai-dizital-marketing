@@ -33,6 +33,20 @@ jobs:
           host="${FTP_SERVER#ftp://}"; host="${host#ftps://}"; host="${host%%/*}"; host="$(echo "$host" | tr -d '[:space:]')"
           echo "host=$host" >> "$GITHUB_OUTPUT"
 
+      - name: Find the right upload folder (public_html)
+        id: dir
+        if: env.FTP_SERVER != ''
+        env:
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          # Main Hostinger FTP account opens one level above public_html; extra FTP accounts open inside it.
+          if curl -s --list-only --user "$FTP_USERNAME:$FTP_PASSWORD" "ftp://${{ steps.ftp.outputs.host }}/" | grep -qx 'public_html'; then
+            echo "dir=public_html/" >> "$GITHUB_OUTPUT"; echo "Uploading into public_html/"
+          else
+            echo "dir=./" >> "$GITHUB_OUTPUT"; echo "FTP account already opens inside public_html - uploading to ./"
+          fi
+
       - name: Upload to Hostinger (public_html)
         if: env.FTP_SERVER != ''
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -43,7 +57,7 @@ jobs:
           protocol: ftp
           port: 21
           local-dir: ./
-          server-dir: public_html/
+          server-dir: ${{ steps.dir.outputs.dir }}
           exclude: |
             **/.git*
             **/.git*/**
