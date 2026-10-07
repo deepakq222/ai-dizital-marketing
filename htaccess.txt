@@ -1,0 +1,27 @@
+# =====================================================
+#  Clean URLs - remove .html from all pages
+#  example.com/about.html  ->  example.com/about
+#  example.com/blog.html   ->  example.com/blog   (works even though a "blog" folder exists)
+#  example.com/blog/on-page-seo-checklist.html -> example.com/blog/on-page-seo-checklist
+# =====================================================
+
+Options -MultiViews -Indexes
+RewriteEngine On
+
+# 1) /index.html  ->  /
+RewriteCond %{THE_REQUEST} \s/+(.*/)?index(\.html)?[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# 2) Old links with .html  ->  same URL without .html (301 = good for SEO)
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{THE_REQUEST} \s/+([^?\s]+?)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
+
+# 3) /blog/  ->  /blog   (remove trailing slash when a page with that name exists)
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# 4) Clean URL  ->  open the matching .html file
+#    (checked BEFORE folders, so /blog opens blog.html, not the blog folder)
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.+)$ /$1.html [L]
