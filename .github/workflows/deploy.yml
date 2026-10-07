@@ -26,11 +26,18 @@ jobs:
         if: env.FTP_SERVER != ''
         uses: actions/checkout@v4
 
+      - name: Clean FTP server address (removes ftp:// and trailing /)
+        id: ftp
+        if: env.FTP_SERVER != ''
+        run: |
+          host="${FTP_SERVER#ftp://}"; host="${host#ftps://}"; host="${host%%/*}"; host="$(echo "$host" | tr -d '[:space:]')"
+          echo "host=$host" >> "$GITHUB_OUTPUT"
+
       - name: Upload to Hostinger (public_html)
         if: env.FTP_SERVER != ''
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_SERVER }}
+          server: ${{ steps.ftp.outputs.host }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
