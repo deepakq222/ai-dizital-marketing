@@ -105,9 +105,9 @@ nav a:hover{color:var(--blue);}
 /* stats */
 .stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:24px; margin-top:44px; text-align:center;}
 @media(max-width:800px){.stat-grid{grid-template-columns:1fr 1fr;}}
-.stat h3{font-family:'Space Grotesk',sans-serif; font-size:2rem; color:var(--cyan);}
-.dark-section .stat h3{color:var(--cyan);}
-.stat:not(.dark-section .stat) h3{color:var(--blue);}
+.stat :is(h3,.stat-num){font-family:'Space Grotesk',sans-serif; font-size:2rem; color:var(--cyan);}
+.dark-section .stat :is(h3,.stat-num){color:var(--cyan);}
+.stat:not(.dark-section .stat) :is(h3,.stat-num){color:var(--blue);}
 .stat p{font-size:.9rem; color:var(--muted); margin-top:6px;}
 .dark-section .stat p{color:#B9C6E6;}
 
@@ -188,8 +188,8 @@ nav a::after{background:linear-gradient(90deg,var(--blue),var(--cyan)); border-r
 .port-card.fx .port-overlay span{transform:translateY(12px); transition:transform .45s var(--ease);}
 .port-card.fx:hover .port-overlay span{transform:none;}
 .stagger .reveal.done{transition-delay:0s !important;}
-.stat h3{transition:transform .45s var(--ease), text-shadow .45s var(--ease); display:inline-block;}
-.stat:hover h3{transform:translateY(-4px) scale(1.08); text-shadow:0 10px 26px rgba(34,211,238,.45);}
+.stat :is(h3,.stat-num){transition:transform .45s var(--ease), text-shadow .45s var(--ease); display:inline-block;}
+.stat:hover :is(h3,.stat-num){transform:translateY(-4px) scale(1.08); text-shadow:0 10px 26px rgba(34,211,238,.45);}
 .filter-btn:hover{transform:translateY(-2px); box-shadow:0 10px 22px -10px rgba(21,94,239,.6);}
 .social a:hover{background:rgba(34,211,238,.12); box-shadow:0 0 18px rgba(34,211,238,.45);}
 .wa-float::before{content:''; position:absolute; inset:0; border-radius:50%; background:#25D366; z-index:-1; animation:waPulse 2.4s ease-out infinite;}
@@ -299,7 +299,7 @@ footer a:hover{background-size:100% 1px;}
   [style*="grid-template-columns:repeat(6,1fr)"],
   [style*="grid-template-columns:repeat(7,1fr)"]{grid-template-columns:repeat(3,1fr) !important;}
   .stat-grid{gap:28px 12px;}
-  .stat h3{font-size:1.7rem;}
+  .stat :is(h3,.stat-num){font-size:1.7rem;}
   /* About visual: keep floating cards inside the screen */
   [style*="left:-10px"]{left:10px !important;}
   [style*="right:-14px"]{right:10px !important;}
@@ -331,3 +331,6 @@ footer a:hover{background-size:100% 1px;}
 
 /* stop any element from causing sideways scrolling on phones */
 html, body{max-width:100%; overflow-x:hidden;}
+
+/* stat numbers are text, not headings (SEO) */
+.stat-num{display:inline-block; font-weight:700; line-height:1.2;}

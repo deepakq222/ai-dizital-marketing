@@ -86,60 +86,6 @@ filterBtns.forEach(btn => btn.addEventListener('click', () => {
   });
 }));
 
-// Contact form -> send-mail.php -> Gmail
-(function(){
-  const form = document.getElementById('contactForm');
-  if(!form) return;
-  const msg = document.getElementById('formMsg');
-  const btn = form.querySelector('button[type=submit]');
-  const original = btn.innerHTML;
-  const start = document.getElementById('form_start');
-  if(start) start.value = Date.now();
-  const OK_COLOR = '#0f8a4e', ERR_COLOR = '#d92d20';
-  const show = (text, ok) => { msg.textContent = text; msg.style.color = ok ? OK_COLOR : ERR_COLOR; msg.style.display = 'block'; };
-
-  // no-JS fallback result (?status=success|error)
-  const st = new URLSearchParams(location.search).get('status');
-  if(st === 'success') show('Thank you! Your message has been sent successfully. We will contact you soon.', true);
-  if(st === 'error') show('Sorry, your message could not be sent. Please try again or contact us on WhatsApp.', false);
-
-  const f = id => form.querySelector('#' + id);
-  const rules = {
-    name: v => v.trim().length >= 2 ? '' : 'Please enter your full name.',
-    email: v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? '' : 'Please enter a valid email address (e.g. name@gmail.com).',
-    phone: v => { v = v.trim(); if(!v) return ''; const d = v.replace(/\D/g,'');
-      return (/^\+?[0-9\s\-()]{7,20}$/.test(v) && d.length >= 10 && d.length <= 13) ? '' : 'Please enter a valid phone number (10 digits, with or without +91).'; },
-    message: v => v.trim().length >= 10 ? '' : 'Please tell us a little more about your project (at least 10 characters).'
-  };
-  Object.keys(rules).forEach(id => f(id).addEventListener('input', () => f(id).setCustomValidity('')));
-
-  form.addEventListener('submit', async function(e){
-    e.preventDefault();
-    msg.style.display = 'none';
-    for(const id of Object.keys(rules)){
-      const err = rules[id](f(id).value);
-      f(id).setCustomValidity(err);
-      if(err){ f(id).reportValidity(); show(err, false); f(id).focus(); return; }
-    }
-    btn.disabled = true; btn.innerHTML = 'Sending…';
-    try{
-      const res = await fetch(form.getAttribute('action'), { method:'POST', body:new FormData(form), headers:{'X-Requested-With':'fetch','Accept':'application/json'} });
-      let data = null; try{ data = await res.json(); }catch(_){}
-      if(res.ok && data && data.ok){
-        show(data.message, true);
-        btn.innerHTML = 'Message Sent ✓';
-        form.reset(); if(start) start.value = Date.now();
-        setTimeout(() => { btn.disabled = false; btn.innerHTML = original; }, 3000);
-        return;
-      }
-      show((data && data.message) || 'Sorry, your message could not be sent right now. Please try again, or contact us on WhatsApp.', false);
-    }catch(err){
-      show('Network error — your message was not sent. Please check your internet connection and try again, or contact us on WhatsApp.', false);
-    }
-    btn.disabled = false; btn.innerHTML = original;
-  });
-})();
-
 // Mouse parallax on chakra/hero visuals
 document.querySelectorAll('[data-parallax]').forEach(el => {
   document.addEventListener('mousemove', (e) => {
