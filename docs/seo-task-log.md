@@ -18,3 +18,10 @@ Checked all 34 pages + sitemap.xml + robots.txt (static audit and live fetch).
 
 ## Next priority
 After Search Console has data: improve titles/descriptions of pages with impressions but low CTR; add content for queries ranking 8-20.
+
+## 2026-10-09: 4 new blog posts (24 total)
+- how-to-choose-digital-marketing-agency-delhi (Strategy, BOFU, links to /services + /contact)
+- google-search-console-guide-beginners (SEO)
+- google-analytics-4-small-business-guide (Strategy)
+- digital-marketing-for-coaching-institutes (Lead Generation, links to Local SEO + Social pages)
+Each has BlogPosting + FAQPage + BreadcrumbList schema, TOC, 3 FAQs, internal links. Added to blog.html (cards + Blog schema), homepage "latest" (3 newest) and sitemap.xml (37 URLs). Checked desktop/mobile: no overflow, no JS errors.
